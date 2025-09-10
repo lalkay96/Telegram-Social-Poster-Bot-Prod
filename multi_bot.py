@@ -4,8 +4,9 @@ import os
 
 # === List of all Python bot files to run ===
 BOTS = [
-    "social_poster_twitter.py",
-    "social_poster_tg_ig_fb.py",
+    "social_poster2.py",
+    "9jacashflow_wp_post5.py",
+    "BinanceTrendBot/trend_bot4.py",
 ]
 
 # Twitter Poster
@@ -18,10 +19,24 @@ BOTS2 = [
     "social_poster_tg_ig_fb.py",
 ]
 
+# Twitter, Instagram, Telegram
+BOT3 = [
+    "social_poster3_multi_images.py",
+    "BinanceTrendBot/trend_bot.py",
+]
+
+# Social Poster, 9CF Post Aggregate, Binance Trend Bot, 9CF Trend Scanner
+BOTS4 = [
+    "social_poster2.py",
+    "9jacashflow_wp_post5.py",
+    "BinanceTrendBot/trend_bot4.py",
+    "9jacashflow/scanner/trend_ema.py",
+]
+
 
 # === Launch each bot in a separate subprocess with a 1-minute interval ===
 processes = []
-for bot in BOTS:
+for bot in BOTS4:
     if os.path.exists(bot):
         print(f"🚀 Starting {bot}...")
         p = subprocess.Popen(["python", bot])
