@@ -500,9 +500,9 @@ if __name__ == "__main__":
     run_main_scanner()
 
     # Schedule the scanner
-    schedule.every().day.at("08:04").do(run_main_scanner)
-    schedule.every().day.at("14:04").do(run_main_scanner)
-    schedule.every().day.at("23:04").do(run_main_scanner)
+    schedule.every().day.at("10:04").do(run_main_scanner)
+    schedule.every().day.at("16:04").do(run_main_scanner)
+    schedule.every().day.at("01:04").do(run_main_scanner)
 
     print("\nScheduler initialized. Waiting for the next scheduled run.")
 

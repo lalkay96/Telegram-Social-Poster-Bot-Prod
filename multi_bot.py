@@ -34,9 +34,20 @@ BOTS4 = [
 ]
 
 
+# Social Poster, 9CF Post Aggregate, Binance Trend Bot, 9CF Trend Scanner
+BOTS5 = [
+    "social_poster7.py",
+    "SocialPoster/coinoyo.py",
+    "SocialPoster/filtang.py",
+    "9jacashflow/post/9jacashflow_wp_post10.py",
+    "BinanceTrendBot/trend_bot6.py",
+    "9jacashflow/scanner/trend_ema.py",
+]
+
+
 # === Launch each bot in a separate subprocess with a 1-minute interval ===
 processes = []
-for bot in BOTS4:
+for bot in BOTS5:
     if os.path.exists(bot):
         print(f"🚀 Starting {bot}...")
         p = subprocess.Popen(["python", bot])

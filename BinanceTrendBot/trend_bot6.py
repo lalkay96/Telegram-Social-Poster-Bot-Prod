@@ -136,6 +136,7 @@ def get_trending_markets():
     except Exception as e:
         print(f"Failed to get exchange info: {e}")
         return []
+    
     filtered_pairs = all_usdt_pairs[:200]
     for symbol in filtered_pairs:
         try:
@@ -150,9 +151,11 @@ def get_trending_markets():
             df['close'] = pd.to_numeric(df['close'])
             df['high'] = pd.to_numeric(df['high'])
             df['low'] = pd.to_numeric(df['low'])
+            
             adx = ta.trend.adx(df['high'], df['low'], df['close'], window=14)
             roc = ta.momentum.roc(df['close'], window=12)
             rsi = ta.momentum.rsi(df['close'], window=14)
+            
             if adx.iloc[-1] > 25 and roc.iloc[-1] > 0 and rsi.iloc[-1] > 60:
                 trending_markets.append({
                     'symbol': symbol,
@@ -181,6 +184,7 @@ async def send_long_message(chat_id, text, parse_mode='HTML'):
             current_part += line + '\n'
     if current_part:
         parts.append(current_part)
+
     for part in parts:
         if not part.strip():
             continue
@@ -201,6 +205,7 @@ async def generate_report_text():
         f"<b>Binance Market Trend Report</b>\n\n"
         f"<i>Scan time: {scan_time_str}</i>\n\n"
     )
+    
     trending_markets = get_trending_markets()
     if trending_markets:
         message += "<b>🔥 Trending & Momentum Markets</b>\n\n"
@@ -214,6 +219,7 @@ async def generate_report_text():
             message += "\n"
     else:
         message += "<b>🔥 No significant trending markets found.</b>\n\n"
+    
     message += "<b>📊 Watchlist Markets</b>\n\n"
     for i, coin in enumerate(watchlist, start=1):
         message += f"<b>{i}. {coin}</b>\n"
@@ -222,6 +228,7 @@ async def generate_report_text():
             trend = get_trend(coin, interval)
             message += f"  - Trend ({interval}): {trend}\n"
         message += "\n"
+        
     return message
 
 
@@ -268,22 +275,34 @@ def create_wordpress_post(content_html, title):
         print(f"❌ Post creation failed: {response.status_code} {response.text}")
 
 
-# --- Scheduler Job ---
+# --- Scheduler Job (CORRECTED) ---
 def run_scanner_job():
     tz = pytz.timezone(YOUR_TIMEZONE)
     now = datetime.now(tz)
     current_time_str = now.strftime("%H:%M")
     print(f"\n--- SCHEDULER TRIGGERED at {now.strftime('%Y-%m-%d %H:%M:%S')} ({YOUR_TIMEZONE}) ---")
+    
+    # Create a new event loop for each job execution
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    
     try:
-        message = asyncio.run(send_report())
+        # Run the async function until it's complete
+        message = loop.run_until_complete(send_report())
+        
+        # --- The rest of your synchronous code ---
         wp_html = format_for_wordpress(message)
         update_wordpress_page(wp_html)
         if current_time_str == "09:05":
             title = f"Binance Daily Market Scan – {now.strftime('%B %d, %Y')}"
             create_wordpress_post(wp_html, title)
+            
         print("--- Job finished successfully. ---\n")
     except Exception as e:
         print(f"Job error: {e}")
+    finally:
+        # Close the loop after the job is done
+        loop.close()
 
 
 # --- Main ---
