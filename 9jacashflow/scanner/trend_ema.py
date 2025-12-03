@@ -477,7 +477,7 @@ def run_main_scanner():
     send_to_wordpress(wordpress_title_prefix, final_wordpress_content, log_file_overall, page_id=WORDPRESS_SCANNER_PAGE_ID)
 
     # --- Create a New Post for Archive (Only at the final scheduled time) ---
-    if current_time.hour == 8 and current_time.minute <= 5: 
+    if current_time.hour == 10 and current_time.minute <= 5: 
         archive_post_title = f"Daily Market Scan Results - {current_time.strftime('%B %d, %Y')}"
         send_to_wordpress(
             archive_post_title, 
@@ -500,7 +500,7 @@ if __name__ == "__main__":
     run_main_scanner()
 
     # Schedule the scanner
-    schedule.every().day.at("10:04").do(run_main_scanner)
+    schedule.every().day.at("10:03").do(run_main_scanner)
     schedule.every().day.at("16:04").do(run_main_scanner)
     schedule.every().day.at("01:04").do(run_main_scanner)
 
